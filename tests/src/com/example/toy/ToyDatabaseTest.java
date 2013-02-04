@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.example.toy.database.ToyDatabaseHelper;
 import com.example.toy.database.ToyDatabaseHelper.RecordTable;
+import com.example.toy.model.RecodeModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,15 +41,12 @@ public class ToyDatabaseTest extends AndroidTestCase {
             long start = System.currentTimeMillis();
             for (int i = 0; i < array.length(); i++) {
                 JSONObject obj = array.getJSONObject(i);
-                String serial = obj.getString("serial");
-                String sort = obj.getString("sort");
-                int amount = obj.getInt("amount");
-                int distribute = obj.getInt("distribute");
+                RecodeModel model = RecodeModel.createFromJson(obj);
                 ContentValues values = new ContentValues();
-                values.put(RecordTable.COLUMN_SERIAL, serial);
-                values.put(RecordTable.COLUMN_AMOUNT, amount);
-                values.put(RecordTable.COLUMN_SORT, sort);
-                values.put(RecordTable.COLUMN_DISTRIB, distribute);
+                values.put(RecordTable.COLUMN_SERIAL, model.getSerial());
+                values.put(RecordTable.COLUMN_AMOUNT, model.getAmount());
+                values.put(RecordTable.COLUMN_SORT, model.getSort());
+                values.put(RecordTable.COLUMN_DISTRIB, model.getDistribute());
                 mToyDatabaseHelper.insertRecord(values);
             }
             long duration = System.currentTimeMillis() - start;

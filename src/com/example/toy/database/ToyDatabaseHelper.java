@@ -4,13 +4,15 @@ package com.example.toy.database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteCursorDriver;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQuery;
 import android.provider.BaseColumns;
 import android.util.Log;
+
+import com.example.toy.model.RecodeModel;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -28,14 +30,12 @@ public class ToyDatabaseHelper extends SQLiteOpenHelper {
         public static final String COLUMN_SORT = "sort";
         public static final String COLUMN_AMOUNT = "amount";
         public static final String COLUMN_DISTRIB = "distrib";
-
     }
 
     private static ToyDatabaseHelper sInstance;
 
     public ToyDatabaseHelper(Context context) {
         super(context, NAME, new CursorFactory() {
-
             @Override
             public Cursor newCursor(SQLiteDatabase db, SQLiteCursorDriver masterQuery,
                     String editTable,
@@ -75,15 +75,12 @@ public class ToyDatabaseHelper extends SQLiteOpenHelper {
             db.beginTransaction();
             for (int i = 0; i < array.length(); i++) {
                 JSONObject obj = array.getJSONObject(i);
-                String serial = obj.getString("serial");
-                String sort = obj.getString("sort");
-                int amount = obj.getInt("amount");
-                int distribute = obj.getInt("distribute");
+                RecodeModel mode = RecodeModel.createFromJson(obj);
                 ContentValues values = new ContentValues();
-                values.put(RecordTable.COLUMN_SERIAL, serial);
-                values.put(RecordTable.COLUMN_AMOUNT, amount);
-                values.put(RecordTable.COLUMN_SORT, sort);
-                values.put(RecordTable.COLUMN_DISTRIB, distribute);
+                values.put(RecordTable.COLUMN_SERIAL, mode.getSerial());
+                values.put(RecordTable.COLUMN_AMOUNT, mode.getAmount());
+                values.put(RecordTable.COLUMN_SORT, mode.getSort());
+                values.put(RecordTable.COLUMN_DISTRIB, mode.getDistribute());
                 db.insert(RecordTable.TABLE_NAME, null, values);
             }
             db.setTransactionSuccessful();
